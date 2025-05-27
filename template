@@ -1,0 +1,104 @@
+interface GigabitEthernet2
+ ip address {{IKE-Local-PublicIP}} {{SUBNET_IKE}}
+ negotiation auto
+ no shutdown
+
+crypto ikev2 proposal p1-global
+encryption aes-cbc-128 aes-cbc-256
+integrity sha1 sha256 sha384 sha512
+group 14 15 16
+!
+crypto ikev2 policy policy1-global
+proposal p1-global
+!
+crypto ikev2 keyring if-ipsec1-ikev2-keyring
+peer if-ipsec1-ikev2-keyring-peer
+address {{Tunnel1-DestinationIP}}
+pre-shared-key 0 {{Tunnel1-PSK}}
+!
+!
+crypto ikev2 keyring if-ipsec2-ikev2-keyring
+peer if-ipsec2-ikev2-keyring-peer
+address {{Tunnel2-DestinationIP}}
+pre-shared-key 0 {{Tunnel2-PSK}}
+!
+!
+crypto ikev2 profile if-ipsec1-ikev2-profile
+match identity remote address {{Tunnel1-DestinationIP}} 255.255.255.255
+identity local address {{IKE-Local-PublicIP}}
+authentication remote pre-share
+authentication local pre-share
+keyring local if-ipsec1-ikev2-keyring
+dpd 10 3 on-demand
+no config-exchange request
+!
+crypto ikev2 profile if-ipsec2-ikev2-profile
+match identity remote address {{Tunnel2-DestinationIP}} 255.255.255.255
+identity local address {{IKE-Local-PublicIP}}
+authentication remote pre-share
+authentication local pre-share
+keyring local if-ipsec2-ikev2-keyring
+dpd 10 3 on-demand
+no config-exchange request
+!
+!
+!
+crypto ipsec transform-set if-ipsec1-ikev2-transform esp-gcm 256
+mode tunnel
+!
+!
+crypto ipsec transform-set if-ipsec2-ikev2-transform esp-gcm 256
+mode tunnel
+!
+crypto ipsec profile if-ipsec1-ipsec-profile
+set security-association replay window-size 512
+set transform-set if-ipsec1-ikev2-transform
+set pfs group20
+set ikev2-profile if-ipsec1-ikev2-profile
+!
+crypto ipsec profile if-ipsec2-ipsec-profile
+set security-association replay window-size 512
+set transform-set if-ipsec2-ikev2-transform
+set pfs group20
+set ikev2-profile if-ipsec2-ikev2-profile
+!
+!
+
+!
+!
+interface Tunnel100001
+ip address {{Tunnel1-Local-IP}} 255.255.255.252
+ip mtu 1500
+tunnel source GigabitEthernet1
+tunnel mode ipsec ipv4
+tunnel destination {{Tunnel1-DestinationIP}}
+tunnel path-mtu-discovery
+tunnel protection ipsec profile if-ipsec1-ipsec-profile
+!
+!
+!
+!
+interface Tunnel100002
+ip address {{Tunnel2-Local-IP}} 255.255.255.252
+ip mtu 1500
+tunnel source GigabitEthernet1
+tunnel mode ipsec ipv4
+tunnel destination {{Tunnel2-DestinationIP}}
+tunnel path-mtu-discovery
+tunnel protection ipsec profile if-ipsec2-ipsec-profile
+!
+!##Routing
+router bgp {{BGP-Local-ASN}}
+bgp log-neighbor-changes
+!
+redistribute connected
+redistribute static
+redistribute omp
+neighbor {{Tunnel1-BGP-Neighbor}} remote-as 31898
+neighbor {{Tunnel1-BGP-Neighbor}} activate
+neighbor {{Tunnel1-BGP-Neighbor}} send-community both
+neighbor {{Tunnel2-BGP-Neighbor}} remote-as 31898
+neighbor {{Tunnel2-BGP-Neighbor}} activate
+neighbor {{Tunnel2-BGP-Neighbor}} send-community both
+distance bgp 20 200 20
+exit-address-family

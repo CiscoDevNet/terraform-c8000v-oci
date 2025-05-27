@@ -1,0 +1,9 @@
+python3 create_ipsec.py \
+  --username oci-user \
+  --ip 64.181.227.59 \
+  --key ssh-key-2025-04-11.key \
+  --password Admin12345 \
+  --tunnel1-destination-ip 152.67.248.185 \
+  --tunnel1-psk r8fnOtUG1uo52ZgrFJSmnDUlZH47hMqbkcynHUYZota440aIOQYIQ5HuCh48CNu2 \
+  --tunnel2-destination-ip 129.159.45.222 \
+  --tunnel2-psk 78WEhdwW4IfKP848ndaRR4Ole7EtUY9lfe19LgxYdToDiUgpwHNiKFE4OpMdvk2e \

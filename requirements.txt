@@ -1,0 +1,8 @@
+# Python dependencies for C8Kv-OCI-Support
+# Python version >= 3.10 recommended
+
+paramiko==3.4.0
+pexpect==4.8.0
+scp==0.15.0
+oci==2.141.1
+oci-cli==3.51.1 
