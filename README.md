@@ -1,4 +1,4 @@
-# Terraform for Catalyst 8000V in Orcale Cloud 
+# Terraform for Catalyst 8000V in Oracle Cloud 
 
 This terraform deploys a pair (or more) of Catalyst 8000V, OCI Dynamic Routing Gateway (DRG) and BGP session between them. Curently, the script uses private market place offering for wide field testing. Once the image for C8000V in OCI is public,the script will be updated accordignly. 
 
@@ -297,3 +297,4 @@ This module creates a Dynamic Routing Gateway (DRG) and related resources for IP
       terraform destroy
       ```
       This command will destroy all resources.
+
