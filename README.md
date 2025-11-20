@@ -3,6 +3,11 @@
 This terraform deploys a pair (or more) of Catalyst 8000V, OCI Dynamic Routing Gateway (DRG) and BGP session between them. Curently, the script uses private market place offering for wide field testing. Once the image for C8000V in OCI is public,the script will be updated accordignly. 
 
 Refer to this YouTube guide for visual instruction on the script use: https://youtu.be/rYP_ix0rFZ0
+
+<img width="1080" height="608" alt="OCI_Network_Layout" src="https://github.com/user-attachments/assets/6ab95e48-f3e9-437c-91b3-34b4d69c7a8c" />
+This is the topology that the scripts will create.
+
+
 <!-- BEGIN_TF_DOCS -->
 ## Modules
 
@@ -297,4 +302,5 @@ This module creates a Dynamic Routing Gateway (DRG) and related resources for IP
       terraform destroy
       ```
       This command will destroy all resources.
+
 
